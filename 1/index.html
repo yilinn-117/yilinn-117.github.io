@@ -66,39 +66,25 @@
         to finish this task: 
         I used standard deviation in color intensity to crop the side. If the standard deviation of a row or a column is under a certain value, I assume that that row/column is all black/white and hence remove it. 
         I then used NCC as a criterion to see how much each of the two matrices correspond to each other. Using the blue channel as a base, I searched through a given margin for the best NCC between green/blue and red/blue and adjusted the position accordingly.
-        For tif images, I used a Gaussian pyramid to speed up the calculation. I used a 4 layer pyramid, where the top layer is the original image and the subsequent layers are 1/2, 1/4, and 1/8 in size compared to the original.
-        The bottom layer would search through a margin of [-20,20] in both vertical and horizontal directions, and the top layer would only seach in a [-5,5] margin due to computational complexity, the middle layer used 15 and 10 as margin accordingly.
+        For TIF images, I used a Gaussian pyramid to speed up the calculation. I used a 4 layer pyramid, where the top layer is the original image and the subsequent layers are 1/2, 1/4, and 1/8 in size compared to the original.
+        The bottom layer would search through a margin of [-20,20] in both vertical and horizontal directions, and the top layer would only search in a [-5,5] margin due to computational complexity, the middle layer used 15 and 10 as margin accordingly.
         After the alignment, I balanced the color intensity and contrast to improve the final quality.
     </p>
 </section>
 
 <section>
-    <h2>Small Image: Monastary</h2>
+    <h2>Small Image: Cathedral</h2>
     <div class="image-gallery">
         <figure class="image-container">
-            <img src="image1.jpg" alt="Description of Image 1">
-            <figcaption>Subtitle for Image 1</figcaption>
+            <img src="./cathedralinit.jpg" alt="Original">
         </figure>
         <figure class="image-container">
-            <img src="image3.jpg" alt="Description of Image 3">
+            <img src="./cathedral.jpg" alt="Offset: r[8,0],g[1,0]">
             <figcaption>Subtitle for Image 3</figcaption>
         </figure>
     </div>
 </section>
 
-<section>
-    <h2>Small Image: Monastary</h2>
-    <div class="image-gallery">
-        <figure class="image-container">
-            <img src="image1.jpg" alt="Description of Image 1">
-            <figcaption>Subtitle for Image 1</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="image3.jpg" alt="Description of Image 3">
-            <figcaption>Subtitle for Image 3</figcaption>
-        </figure>
-    </div>
-</section>
 
 
 <section>
@@ -108,7 +94,7 @@
             <img src="./iconinit.jpg" alt="Original">
         </figure>
         <figure class="image-container">
-            <img src="./icon.jpg" alt="Offset: r[108,36], g[52,25]">
+            <img src="./icon.jpg" alt="Offset: r[90,22], g[40,16]">
         </figure>
     </div>
 </section>
