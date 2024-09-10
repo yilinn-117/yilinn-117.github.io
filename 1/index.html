@@ -62,8 +62,11 @@
 <section>
     <h2>Methodology</h2>
     <p>
-        In this project I try to align three greyscale pictures denoting color channels and synthesis them into one color picture. I used the following approach 
-        to finish this task: I used NCC as a criteria to see how much each 
+        In this project, I try to align three greyscale pictures denoting color channels and synthesis them into one color picture. I used the following approach 
+        to finish this task: 
+        I used standard deviation in color intensity to crop the side. If the standard deviation of a row or a column is under a certain value, 
+        I assume that that row/column is all black/white and hence remove it. 
+        I then used NCC as a criterion to see how much each two matrice 
     </p>
 </section>
 
