@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 1: Align Images</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+        section {
+            margin: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+        }
+        .image-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .image-container {
+            text-align: center;
+            width: 300px;
+        }
+        .image-container img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .image-container figcaption {
+            margin-top: 5px;
+            font-style: italic;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Project 1</h1>
+</header>
+
+<section>
+    <h2>Methodology</h2>
+    <p>
+        In this project, I try to align three greyscale pictures denoting color channels and synthesize them into one color picture. I used the following approach 
+        to finish this task: 
+        I used standard deviation in color intensity to crop the side. If the standard deviation of a row or a column is under a certain value, I assume that that row/column is all black/white and hence remove it. 
+        I then used NCC as a criterion to see how much each of the two matrices correspond to each other. Using the blue channel as a base, I searched through a given margin for the best NCC between green/blue and red/blue and adjusted the position accordingly.
+        For TIF images, I used a Gaussian pyramid to speed up the calculation. I used a 4 layer pyramid, where the top layer is the original image and the subsequent layers are 1/2, 1/4, and 1/8 in size compared to the original.
+        The bottom layer would search through a margin of [-20,20] in both vertical and horizontal directions, and the top layer would only search in a [-5,5] margin due to computational complexity, the middle layer used 15 and 10 as margin accordingly.
+        After the alignment, I balanced the color intensity and contrast to improve the final quality.
+    </p>
+</section>
+
+<section>
+    <h2>Small Image: Cathedral</h2>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./cathedralinit.jpg" alt="Original">
+            <figcaption>Original</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./cathedral.jpg" alt="Offset: r[8,0],g[1,0]">
+            <figcaption>Offset: r[8,0],g[1,0]</figcaption>
+        </figure>
+    </div>
+</section>
+
+
+
+<section>
+    <h2>Large Image: Icon</h2>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./iconinit.jpg" alt="Original">
+            <figcaption>Original</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./icon.jpg" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Offset: r[90,22], g[40,16]</figcaption>
+        </figure>
+    </div>
+</section>
+
+
+<section>
+    <h2>Large Image: Harvesters</h2>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./harvestersinit.jpg" alt="Original">
+            <figcaption>Original</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./harvesters.jpg" alt="Offset: r[121,12], g[59,10]">
+            <figcaption>Offset: r[121,12], g[59,10]</figcaption>
+        </figure>
+    </div>
+</section>
+    
+<section>
+    <h2>Large Image: Onion Church</h2>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./onion_churchinit.jpg" alt="Original">
+            <figcaption>Original</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./onion_church.jpg" alt="Offset: r[108,36], g[52,25]">
+            <figcaption>Offset: r[108,36], g[52,25]</figcaption>
+        </figure>
+    </div>
+</section>
+
+<section>
+    <h2>Optional Image: Castle</h2>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./castleinit.jpg" alt="Original">
+            <figcaption>Original</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./castle.jpg" alt="Offset: r[82,-23], g[34,-13]">
+            <figcaption>Offset: r[82,-23], g[34,-13]</figcaption>
+        </figure>
+    </div>
+</section>
+
+<section>
+    <h2>Optional Image: Tree</h2>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./treeinit.jpg" alt="Original">
+            <figcaption>Original</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./tree.jpg" alt="Offset: r[60,-3], g[-57,-3]">
+            <figcaption>Offset: r[60,-3], g[-57,-3]</figcaption>
+        </figure>
+    </div>
+</section>
+
+<section>
+    <h2>Bad Image: Emir</h2>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./emir.jpg" alt="Processed">
+            <figcaption>Processed</figcaption>
+        </figure>
+    </div>
+</section>
+
+<section>
+    <h2>Conclusion</h2>
+    <p>
+        We could see that most of the images appeared to be okay after my processing. In some of the images the red channel isn't aligned perfectly (there is a small red outline visible), I assume that this is due to the final margin being set too low (-5,5), but I think this is a necessary compromise
+        for efficiency, the TIF
+        images on average take 3 minutes to process, if I extend the margin on the final search, the time would vastly increase.
+        Apart from the quality issue mentioned above, one image turns out to be really bad: the emir.tif, I assume this is due to some angle disimilarity between the three color channels and requires another dimention (angle between channels) during margin search to align perfectly.
+    </p>
+</section>
+
+<footer>
+    <p>&copy; Yilin Ni's Project 1</p>
+</footer>
+
+</body>
+</html>
