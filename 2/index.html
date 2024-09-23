@@ -56,23 +56,12 @@
 <body>
 
 <header>
-    <h1>Project 1</h1>
+    <h1>Project 2</h1>
 </header>
-
+    
 <section>
-    <h2>Methodology</h2>
-    <p>
-        In this project, I try to align three greyscale pictures denoting color channels and synthesize them into one color picture. I used the following approach 
-        to finish this task: 
-        I used standard deviation in color intensity to crop the side. If the standard deviation of a row or a column is under a certain value, I assume that that row/column is all black/white and hence remove it. 
-        I then used NCC as a criterion to see how much each of the two matrices correspond to each other. Using the blue channel as a base, I searched through a given margin for the best NCC between green/blue and red/blue and adjusted the position accordingly.
-        For TIF images, I used a Gaussian pyramid to speed up the calculation. I used a 4 layer pyramid, where the top layer is the original image and the subsequent layers are 1/2, 1/4, and 1/8 in size compared to the original.
-        The bottom layer would search through a margin of [-20,20] in both vertical and horizontal directions, and the top layer would only search in a [-5,5] margin due to computational complexity, the middle layer used 15 and 10 as margin accordingly.
-        After the alignment, I balanced the color intensity and contrast to improve the final quality.
-    </p>
-</section>
-
-<section>
+    <h2>Part 1: Fun with Filters</h2>
+    <h3>Part 1.1: Finite Difference Operator</h3>
     <h2>Small Image: Cathedral</h2>
     <div class="image-gallery">
         <figure class="image-container">
@@ -84,8 +73,16 @@
             <figcaption>Offset: r[8,0],g[1,0]</figcaption>
         </figure>
     </div>
+    <p>
+        In this project, I try to align three greyscale pictures denoting color channels and synthesize them into one color picture. I used the following approach 
+        to finish this task: 
+        I used standard deviation in color intensity to crop the side. If the standard deviation of a row or a column is under a certain value, I assume that that row/column is all black/white and hence remove it. 
+        I then used NCC as a criterion to see how much each of the two matrices correspond to each other. Using the blue channel as a base, I searched through a given margin for the best NCC between green/blue and red/blue and adjusted the position accordingly.
+        For TIF images, I used a Gaussian pyramid to speed up the calculation. I used a 4 layer pyramid, where the top layer is the original image and the subsequent layers are 1/2, 1/4, and 1/8 in size compared to the original.
+        The bottom layer would search through a margin of [-20,20] in both vertical and horizontal directions, and the top layer would only search in a [-5,5] margin due to computational complexity, the middle layer used 15 and 10 as margin accordingly.
+        After the alignment, I balanced the color intensity and contrast to improve the final quality.
+    </p>
 </section>
-
 
 
 <section>
