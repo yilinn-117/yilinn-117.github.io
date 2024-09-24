@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project 1: Align Images</title>
+    <title>Project 2: Fun with Filters and Frequencies!</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,16 +28,28 @@
             border-radius: 8px;
         }
         .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 6px; 
+        }
+
+
+        .image-gallery img {
+            width: 100%; 
+            height: auto; 
+            display: block;
+        }
+
+        .image-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
-        }
-        .image-container {
             text-align: center;
-            width: 300px;
+            width: 100%;
+            gap: 5px;
         }
         .image-container img {
             width: 100%;
+            height: auto;
             border-radius: 8px;
         }
         .image-container figcaption {
@@ -62,122 +74,263 @@
 <section>
     <h2>Part 1: Fun with Filters</h2>
     <h3>Part 1.1: Finite Difference Operator</h3>
-    <h2>Small Image: Cathedral</h2>
     <div class="image-gallery">
         <figure class="image-container">
-            <img src="./cathedralinit.jpg" alt="Original">
+            <img src="./1.1/output.png" alt="Original">
             <figcaption>Original</figcaption>
         </figure>
         <figure class="image-container">
-            <img src="./cathedral.jpg" alt="Offset: r[8,0],g[1,0]">
-            <figcaption>Offset: r[8,0],g[1,0]</figcaption>
+            <img src="./1.1/cameraman_Dx.png" alt="D_x">
+            <figcaption>D_x</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./1.1/cameraman_Dy.png" alt="D_y">
+            <figcaption>D_y</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./1.1/gradient_magnitude.png" alt="D_y">
+            <figcaption>Gradient Magnitude</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./1.1/edge.png" alt="D_y">
+            <figcaption>Edge</figcaption>
         </figure>
     </div>
     <p>
-        In this project, I try to align three greyscale pictures denoting color channels and synthesize them into one color picture. I used the following approach 
-        to finish this task: 
-        I used standard deviation in color intensity to crop the side. If the standard deviation of a row or a column is under a certain value, I assume that that row/column is all black/white and hence remove it. 
-        I then used NCC as a criterion to see how much each of the two matrices correspond to each other. Using the blue channel as a base, I searched through a given margin for the best NCC between green/blue and red/blue and adjusted the position accordingly.
-        For TIF images, I used a Gaussian pyramid to speed up the calculation. I used a 4 layer pyramid, where the top layer is the original image and the subsequent layers are 1/2, 1/4, and 1/8 in size compared to the original.
-        The bottom layer would search through a margin of [-20,20] in both vertical and horizontal directions, and the top layer would only search in a [-5,5] margin due to computational complexity, the middle layer used 15 and 10 as margin accordingly.
-        After the alignment, I balanced the color intensity and contrast to improve the final quality.
+        The gradient is a vector consisting of partial derivatives, we calculate the magnitude by 
+        taking square root of the sum of the squared x partial derivative and squared y partial derivative. (since this is 2 dimension)
+    </p>
+    <p>
+        While a clear edge image could be shown, there are many gaps between the edge.
+    </p>
+
+    <h3>Part 1.2: Derivative of Gaussian (DoG) Filter</h3>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./1.2/D_x.png" alt="Original">
+            <figcaption>Blurred D_x</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./1.2/Dy.png" alt="D_x">
+            <figcaption>Blurred D_y</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./1.2/magnitude.png" alt="D_y">
+            <figcaption>Blurred Magnitude</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./1.2/edge.png" alt="D_y">
+            <figcaption>Edge</figcaption>
+        </figure>
+        <figure class="image-container"></figure>
+            <img src="./1.2/DoGedge.png" alt="D_y">
+            <figcaption>DoG Edge</figcaption>
+        </figure>
+    </div>
+    <p>
+        We could see that the edge is a lot smoother in the gradient image. 
+        As a result, the edge image performs better (less gap in between) with curated threshold.
+        Also, we recognize that the edge image generated from 
+        blurring the original then convolve is identical to the edge image genereated by 
+        convolve the gaussian kernel then convolve, proving that convolution has same property as multiply.
     </p>
 </section>
 
 
 <section>
-    <h2>Large Image: Icon</h2>
+    <h2>Part 2: Fun with Frequencies!</h2>
+    <h3>Part 2.1: Image "Sharpening"</h3>
     <div class="image-gallery">
         <figure class="image-container">
-            <img src="./iconinit.jpg" alt="Original">
+            <img src="./2.1/taj.png" alt="Original">
             <figcaption>Original</figcaption>
         </figure>
         <figure class="image-container">
-            <img src="./icon.jpg" alt="Offset: r[90,22], g[40,16]">
-            <figcaption>Offset: r[90,22], g[40,16]</figcaption>
+            <img src="./2.1/taj_blur.png" alt="Original">
+            <figcaption>Taj without high freq</figcaption>
+        </figure>
+        <figure class="image-container"></figure>
+            <img src="./2.1/taj_high_freq.png" alt="Original">
+            <figcaption>the high freq</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./2.1/sharp_taj.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Sharped Taj (blurred + 3 * high freq)</figcaption>
         </figure>
     </div>
-</section>
 
-
-<section>
-    <h2>Large Image: Harvesters</h2>
     <div class="image-gallery">
         <figure class="image-container">
-            <img src="./harvestersinit.jpg" alt="Original">
-            <figcaption>Original</figcaption>
+            <img src="./2.1/phantom.png" alt="Original">
+            <figcaption>Phantom</figcaption>
         </figure>
         <figure class="image-container">
-            <img src="./harvesters.jpg" alt="Offset: r[121,12], g[59,10]">
-            <figcaption>Offset: r[121,12], g[59,10]</figcaption>
+            <img src="./2.1/phantom_blur.png" alt="Original">
+            <figcaption>Phantom without high freq</figcaption>
+        </figure>
+        <figure class="image-container"></figure>
+            <img src="./2.1/phantom_high_freq.png" alt="Original">
+            <figcaption>the high freq</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./2.1/sharp_phantom.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Sharped Phantom (blurred + 3 * high freq)</figcaption>
         </figure>
     </div>
-</section>
-    
-<section>
-    <h2>Large Image: Onion Church</h2>
-    <div class="image-gallery">
-        <figure class="image-container">
-            <img src="./onion_churchinit.jpg" alt="Original">
-            <figcaption>Original</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="./onion_church.jpg" alt="Offset: r[108,36], g[52,25]">
-            <figcaption>Offset: r[108,36], g[52,25]</figcaption>
-        </figure>
-    </div>
-</section>
 
-<section>
-    <h2>Optional Image: Castle</h2>
     <div class="image-gallery">
         <figure class="image-container">
-            <img src="./castleinit.jpg" alt="Original">
-            <figcaption>Original</figcaption>
+            <img src="./2.1/countach.png" alt="Original">
+            <figcaption>Countach</figcaption>
         </figure>
         <figure class="image-container">
-            <img src="./castle.jpg" alt="Offset: r[82,-23], g[34,-13]">
-            <figcaption>Offset: r[82,-23], g[34,-13]</figcaption>
+            <img src="./2.1/countach_blur.png" alt="Original">
+            <figcaption>Countach without high freq</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./2.1/sharp_countach.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Sharped Countach (blurred + 3 * high freq)</figcaption>
         </figure>
     </div>
-</section>
 
-<section>
-    <h2>Optional Image: Tree</h2>
     <div class="image-gallery">
         <figure class="image-container">
-            <img src="./treeinit.jpg" alt="Original">
-            <figcaption>Original</figcaption>
+            <img src="./2.1/i7.png" alt="Original">
+            <figcaption>i7</figcaption>
         </figure>
         <figure class="image-container">
-            <img src="./tree.jpg" alt="Offset: r[60,-3], g[-57,-3]">
-            <figcaption>Offset: r[60,-3], g[-57,-3]</figcaption>
+            <img src="./2.1/i7_blur.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>i7 without high freq</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./2.1/sharp_i7.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Sharped i7 (blurred + 3 * high freq)</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./2.1/blur_sharp_i7.png" alt="Original">
+            <figcaption>Sharped i7 without high freq</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./2.1/extra_sharp_i7.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Twice Sharped i7 (blurred + 6 * high freq)</figcaption>
         </figure>
     </div>
-</section>
+    <p>Compare the original and the sharpened images, we could see that the fine details 
+        of each car is strengthened in sharpened images, those include the grill, vague shadow
+        of branches on glass,and small area reflection of protrude parts.
+    </p>
+    <p>When sharpen the sharped already image of BMW i7, we could see that during the blur step 
+        (Sharped i7 without high freq)
+        , the image resembles the original image. After the second sharpen is applied, 
+        it seems like all the strokes on the car has been amplified, making it seem unreal.
+    </p>
 
-<section>
-    <h2>Bad Image: Emir</h2>
+    <h3>Part 2.2: Hybrid Images</h3>
     <div class="image-gallery">
         <figure class="image-container">
-            <img src="./emir.jpg" alt="Processed">
-            <figcaption>Processed</figcaption>
+            <img src="./2.2/nutmeg.jpg" alt="Original">
+            <figcaption>high freq input</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./2.2/DerekPicture.jpg" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>low freq input</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./2.2/derek.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>result</figcaption>
         </figure>
     </div>
+    <img src="./2.2/freq.png" alt="My Image" width="1000" height="300">
+ 
+    <p> From the fourier transform above, we could see that the the filtered high freq input is 
+        got strengthened for its non-vertial and non-horizontal frequencies, those are the detail on nutmeg's face,
+        the filtered low freq input is reduced to mostly horizontal and vertical, constructing the 
+        basic structure of the hybrid image. The final hybrid image is just as we could predict from the 
+        fourier analysis: the fine detail of nutmeg's face, its mustache and facial hair is prominant 
+        when looked closely, and the underlying structure of Derek's face could be seen from afar.
+    </p>
+
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./2.2/Laf.jpg" alt="Original">
+            <figcaption>high freq input</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./2.2/p1.jpg" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>low freq input</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./2.2/car_hybrid.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>result</figcaption>
+        </figure>
+    </div>
+    <p> This is the hybrid picture of two cars: ferrari laferrari and mclaren p1, I assume
+        this is a successful example as looking close we could see the high freq input clearly
+        (the ferrari) and barely sees the low freq input, and vice versa when look from afar.
+        I think this good hybrid is due to I chose two cars with similar structure (both are sport cars)
+        and they are of similar color (black glass, red-ish/black paint).
+    </p>
+
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./2.2/EyeRoll.png" alt="Original">
+            <figcaption>high freq input</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./2.2/TearsofJoy.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>low freq input</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./2.2/emoji_hybrid.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>result</figcaption>
+        </figure>
+    </div>
+
+    <p> This is the hybrid picture of two emojis: eyeroll and tears of joy, I assume
+        this is a failed example as both of the high and low frequencies are present no matter
+        obversed from what distance. I think this is due to the big structural difference 
+        between the two emojis, while the background is a big yellow circle, their eyes and 
+        mouth vary vastly in color, shape and angle. The edges are also very abrupt in those two
+        emojis, making both emoji present even with filtering.
+    </p>
+    <h3>Part 2.3: Gaussian and Laplacian Stacks</h3>
+    <figure>
+        <img src="./2.3/stack.png" alt="My Image" width="670" height="1000">
+        <figcaption>Laplacian Stack Detail</figcaption>
+    </figure>
+    <figure>
+        <img src="./2.3/final.png" alt="My Image" width="450" height="300">
+        <figcaption>Final result: oraple</figcaption>
+    </figure>
+    <h3>Part 2.4: Multiresolution Blending</h3>
+    <figure></figure>
+        <img src="./2.4/blending_car.png" alt="My Image" width="550" height="300">
+        <figcaption>From the two car pictures above</figcaption>
+    </figure>
+    <figure></figure>
+        <img src="./2.4/hand_nose.png" alt="My Image" width="400" height="300">
+        <figcaption>A circular mask</figcaption>
+    </figure>
+    <p>
+        The car blending worked well. However, I couldn't find a way to do smooth mask for the ciruclar mask, hence the hand_nose blending
+        looks pretty bad with the circular seam at the middle.
+    </p>
 </section>
 
 <section>
     <h2>Conclusion</h2>
     <p>
-        We could see that most of the images appeared to be okay after my processing. In some of the images the red channel isn't aligned perfectly (there is a small red outline visible), I assume that this is due to the final margin being set too low (-5,5), but I think this is a necessary compromise
-        for efficiency, the TIF
-        images on average take 3 minutes to process, if I extend the margin on the final search, the time would vastly increase.
-        Apart from the quality issue mentioned above, one image turns out to be really bad: the emir.tif, I assume this is due to some angle disimilarity between the three color channels and requires another dimention (angle between channels) during margin search to align perfectly.
+        From this project, we could see that multiresolution blending is quite a strong tool,
+        the final output image is almost flawless. The laplacian stack is good at hybriding two images,
+        which could be resonablely infered that it could be used to mix sounds. When detecting 
+        gradients, applying a gaussian filter could significantly reduce the noise in final output.
+        Oversharpening an image does not make it clear, but makes it look unreal instead.
     </p>
 </section>
 
+
 <footer>
-    <p>&copy; Yilin Ni's Project 1</p>
+    <p>&copy; Yilin Ni's Project 2</p>
 </footer>
 
 </body>
