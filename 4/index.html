@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 4A: Image Warping and Mosaicing</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+        section {
+            margin: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+        }
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 6px; 
+        }
+
+
+        .image-gallery img {
+            width: 100%; 
+            height: auto; 
+            display: block;
+        }
+
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            text-align: center;
+            width: 100%;
+            gap: 5px;
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .image-container figcaption {
+            margin-top: 5px;
+            font-style: italic;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Project 4A: Image Warping and Mosaicing</h1>
+</header>
+    
+<section>
+    <h2>Taking Images</h2>
+    <p>
+        Those are the images I used in this project
+    </p>
+    <p>The solution of the quadratic equation \(ax^2 + bx + c = 0\) is given by:</p>
+    <p>
+        \[
+        x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+        \]
+    </p>
+    <p>Example: Matrix Multiplication</p>
+    <p>
+        \[
+        A \times B =
+        \begin{bmatrix}
+        1 & 2 \\
+        3 & 4
+        \end{bmatrix}
+        \times
+        \begin{pmatrix}
+        5 & 6 \\
+        7 & 8
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+        1 \cdot 5 + 2 \cdot 7 & 1 \cdot 6 + 2 \cdot 8 \\
+        3 \cdot 5 + 4 \cdot 7 & 3 \cdot 6 + 4 \cdot 8
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+        19 & 22 \\
+        43 & 50
+        \end{pmatrix}
+        \]
+    </p>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./me_triangle.png" alt="Original">
+            <figcaption>My Face Triangulated</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./george_triangle.png" alt="D_x">
+            <figcaption>George Face Triangulated</figcaption>
+        </figure>
+    </div>
+    
+</section>
+
+
+<section>
+    <h2>Part 2: Computing the "Mid-way Face"</h2>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./me.png" alt="Original">
+            <figcaption>Me Original Face</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./morph_me.png" alt="Original">
+            <figcaption>Me Morphed to Middle Face</figcaption>
+        </figure>
+        <figure class="image-container"></figure>
+            <img src="./middle_pic.png" alt="Original">
+            <figcaption>the Final Result</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./george.png" alt="Original">
+            <figcaption>George Original Face</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./morph_george.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>George Morphed to Middle Face</figcaption>
+        </figure>
+    </div>
+    <p>
+        I averaged the annotated points for a middle face point structure and found its triangulation.
+        I warped both my and George's face into the middle face to creat the two morphed faces as seen from above.
+        Then I averaged the color of the two morphed faces to create the final result.
+    </p>
+</section>
+
+<section>
+    <h2>Part 3: The Morph Sequence</h2>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./morph_seq.gif" alt="Original">
+            <figcaption>The Morphing Sequence</figcaption>
+        </figure>
+    </div>
+    <p>
+        Using the morph function I wrote, I set wrap_frac and dissolve_frac to both be a evenly spaced sequence
+        of length 45 between 0,1. Creating a gif with 45 frames, then I added a loop effect.
+    </p>
+</section>
+
+
+<section>
+    <h2>Part 4: The "Mean face" of a population</h2>
+    <p>
+        I use data from the FEI Face Database, selecting only the first 50 images of female to avoid 
+        the final average face to be too blurry.
+    </p>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./provided_annotation.png" alt="Original">
+            <figcaption>The Provided Annotation</figcaption>
+        </figure>
+    </div>
+    <p>
+        The keypoints of each face is provided by the website, which we could observe is not very precise.
+    </p>
+
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./popexample1.png" alt="Original">
+            <figcaption>Example 1</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./popexample1_morph.png" alt="Original">
+            <figcaption>Morphed Example 1</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./popexample2.png" alt="Original">
+            <figcaption>Example 2</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./popexample2_morph.png" alt="Original">
+            <figcaption>Morphed Example 2</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./popexample3.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Example 3</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./popexample3_morph.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Morphed Example 3</figcaption>
+        </figure>
+    </div>
+    <p>
+        Some examples of morphing each of the faces in the dataset into the average shape.
+    </p>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./pop_mean_face.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>The Average Face of Population(FEI Female)</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./pop_to_me.png" alt="Original">
+            <figcaption>Population Morped into Me</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./me_to_pop.png" alt="Original">
+            <figcaption>Me Morped into Population</figcaption>
+        </figure>
+    </div>
+    <p>
+        I calculated the mean face by finding the mean point structure of all images and morph all image
+        into the mean strcture. Then averaage the color to get the final blurry mean image.
+        The above also shows my face warped into the average geometry and vice versa.
+    </p>
+</section>
+
+<section>
+    <h2>Part 5: The Caricature</h2>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./pop_mean_face.png" alt="Original">
+            <figcaption>The Average Face of FEI Female</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./caricature_me_female.png" alt="Original">
+            <figcaption>My Face Augmented with Female Traits</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./male_pop_face.png" alt="Original">
+            <figcaption>The Average Face of FEI Male</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./caricature_me_male.png" alt="Original">
+            <figcaption>My Face Augmented with Male Traits</figcaption>
+        </figure>
+    </div>
+    <p>
+        To do the caricature, I calculated the mean face of male and female of the FEI dataset.
+        Then, using a much larger wrap_frac compare to part 2, I made two caricatures, one of me and female traits and another
+        of me and male traits. We could see that the female trait caricature makes my face features to be compressed to the middle,
+        indicating that my facial feature is too spread out compare to the mean face of FEI female.
+        The male trait caricature does not compress my facial feature, but elogated my face horizontally, indicating that
+        my face is narrower than the mean face of FEI male.
+    </p>
+</section>
+
+<section>
+    <h2>Part 6: Bell and Whistles: PCA Basis for the Face Space</h2>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./pca_top10.png" alt="Original">
+            <figcaption>The Top 10 Principle Components of Face</figcaption>
+        </figure>
+    </div>
+    <p>
+        I used PCA method imported from sklearn.decomposition to do PCA analysis on my face space.
+        we could see that some of the features are identified as most prominent in the face space,
+        like hairlines, eyebrows, etc..
+    </p>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./mean_pca.png" alt="Original">
+            <figcaption>The Mean Face</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./10thpc.png" alt="Original">
+            <figcaption>The 10th Principle Conponent (Eyebrows)</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./pcares.png" alt="Original">
+            <figcaption>Mean Face with Extra Sharp Eyebrows</figcaption>
+        </figure>
+    </div>
+    <p>
+        Using the PCA basis, we could augment a face using different features. For example, we could create a face with
+        extra sharp eyebrows as shown above. This is a different way of transformation and morphing compare to
+        the triangular mesh one used in project, but it has a lot of potential to do transformation too.
+    </p>
+</section>
+
+<section>
+    <h2>Conclusion</h2>
+    <p>
+        From this project, we could see that morphing using triangular mesh is very strong, picking the correct alignment
+        would make morphing almost perfect as seen in the morphing sequence.
+    </p>
+</section>
+
+
+<footer>
+    <p>&copy; Yilin Ni's Project 3</p>
+</footer>
+
+</body>
+</html>
