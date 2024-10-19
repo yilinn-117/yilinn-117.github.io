@@ -76,242 +76,422 @@
 </header>
     
 <section>
-    <h2>Taking Images</h2>
+    <h2>Shoot the Pictures</h2>
     <p>
         Those are the images I used in this project
     </p>
-    <p>The solution of the quadratic equation \(ax^2 + bx + c = 0\) is given by:</p>
+    <h3>for Rectification:</h3>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./poster.jpg" alt="Original">
+            <figcaption>Poster on Library Wall</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./campanile.jpg" alt="D_x">
+            <figcaption>Campanile</figcaption>
+        </figure>
+    </div>
+    <h3>for Mosaicing:</h3>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./wurster_center.jpg" alt="Original">
+            <figcaption>Wurster Hall</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./wurster_up.jpg" alt="D_x">
+            <figcaption></figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./fountain_down.jpg" alt="Original">
+            <figcaption>Fountain</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./fountain_up.jpg" alt="D_x">
+            <figcaption></figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./EECS_left.jpg" alt="Original">
+            <figcaption>EECS Hall</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./EECS_right.jpg" alt="D_x">
+            <figcaption></figcaption>
+        </figure>
+    </div>
+</section>
+
+<section>
+    <h2>Recover Homographies</h2>
+    <h3>Theoratical Backgroud</h3>
+    <p>We know that to do projective warping, we need to get the homography matrix H where Hp = p' and </p>
     <p>
         \[
-        x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+        H =
+        \begin{bmatrix}
+        a & b & c \\
+        d & e & f \\
+        g & h & 1
+        \end{bmatrix}
         \]
     </p>
-    <p>Example: Matrix Multiplication</p>
+    <p>H denotes the transformation</p>
     <p>
         \[
-        A \times B =
+        p =
         \begin{bmatrix}
-        1 & 2 \\
-        3 & 4
+        x \\
+        y \\
+        1
+        \end{bmatrix}
+        \]
+    </p>
+    <p>p denotes a point in the base image</p>
+    <p>
+        \[
+        p' =
+        \begin{bmatrix}
+        wx' \\
+        wy' \\
+        w
+        \end{bmatrix}
+        \]        
+    </p>
+    <p>p' denotes a point in the warped image</p>
+    <p>
+        \[
+        w =
+        \begin{bmatrix}
+        g & h & 1
         \end{bmatrix}
         \times
-        \begin{pmatrix}
-        5 & 6 \\
-        7 & 8
-        \end{pmatrix}
+        \begin{bmatrix}
+        x \\
+        y \\
+        1
+        \end{bmatrix}
+        \]        
+    </p>
+    <p>w is calculated as this</p>
+    <p>Substitude w in the above formula and expanding it, we found that coefficients in H could be expressed as</p>
+    <p>
+        \[
+        \begin{bmatrix}
+        x & y & 1 & 0 & 0 & 0 & -xx' & -yx' \\
+        0 & 0 & 0 & x & y & 1 & -xy' & -yy'
+        \end{bmatrix}
+
+        \begin{bmatrix}
+        a \\
+        b \\
+        c \\
+        d \\
+        e \\
+        f \\ 
+        g \\
+        h \\
+        \end{bmatrix}
         =
-        \begin{pmatrix}
-        1 \cdot 5 + 2 \cdot 7 & 1 \cdot 6 + 2 \cdot 8 \\
-        3 \cdot 5 + 4 \cdot 7 & 3 \cdot 6 + 4 \cdot 8
-        \end{pmatrix}
-        =
-        \begin{pmatrix}
-        19 & 22 \\
-        43 & 50
-        \end{pmatrix}
+        \begin{bmatrix}
+        x' \\
+        y'
+        \end{bmatrix}
         \]
     </p>
+    <p>substitude each p & p' pairs and stack them in form of </p>
+    <p>
+        \[
+        \begin{bmatrix}
+        x_1 & y_1 & 1 & 0 & 0 & 0 & -xx' & -yx' \\
+        0 & 0 & 0 & x_1 & y_1 & 1 & -xy' & -yy' \\
+        x_2 & y_2 & 1 & 0 & 0 & 0 & -xx' & -yx' \\
+        0 & 0 & 0 & x_2 & y_2 & 1 & -xy' & -yy' \\
+        e & t & c & e & t & c & . & .
+        \end{bmatrix}
+
+        \begin{bmatrix}
+        a \\
+        b \\
+        c \\
+        d \\
+        e \\
+        f \\ 
+        g \\
+        h \\
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+        x'_1 \\
+        y'_1 \\
+        x'_2 \\
+        y'_2 \\
+        . \\
+        .
+        \end{bmatrix}
+        \]
+    </p>
+    <p>We could solve for coefficients of H using least square where </p>
+    <p>
+        \[
+        x = (A^{t}A)^{-1} A^{t}b
+        \]    
+    </p>
+    <p>where</p>
+    <p>
+        \[
+        x =         
+        \begin{bmatrix}
+        a \\
+        b \\
+        c \\
+        d \\
+        e \\
+        f \\ 
+        g \\
+        h \\
+        \end{bmatrix}
+        \]    
+    </p>
+    <p>
+        \[
+        A =         
+        \begin{bmatrix}
+        x_1 & y_1 & 1 & 0 & 0 & 0 & -xx' & -yx' \\
+        0 & 0 & 0 & x_1 & y_1 & 1 & -xy' & -yy' \\
+        x_2 & y_2 & 1 & 0 & 0 & 0 & -xx' & -yx' \\
+        0 & 0 & 0 & x_2 & y_2 & 1 & -xy' & -yy' \\
+        e & t & c & e & t & c & . & .
+        \end{bmatrix}
+        \]    
+    </p>
+    <p>
+        \[
+        b =         
+        \begin{bmatrix}
+        x'_1 \\
+        y'_1 \\
+        x'_2 \\
+        y'_2 \\
+        . \\
+        .
+        \end{bmatrix}
+        \]    
+    </p>
+
+</section>
+
+
+
+<section>
+    <h2>Warping the Images</h2>
+    <p>
+        First thing to do in warping is to calculate the transformation matrix H, which needs correspondence points p p' pairs to do:
+    </p>
+    <p>Below are the correspondence I annotated</p>
     <div class="image-gallery">
         <figure class="image-container">
-            <img src="./me_triangle.png" alt="Original">
-            <figcaption>My Face Triangulated</figcaption>
+            <img src="./wurster_pts1.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption></figcaption>
         </figure>
         <figure class="image-container">
-            <img src="./george_triangle.png" alt="D_x">
-            <figcaption>George Face Triangulated</figcaption>
+            <img src="./wurster_pts2.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption></figcaption>
         </figure>
     </div>
-    
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./EECSleft_pts.png" alt="Original">
+            <figcaption></figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./EECSright_pts.png" alt="Original">
+            <figcaption></figcaption>
+        </figure>
+    </div>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./fountaindown_pts.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption></figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./fountainup_pts.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption></figcaption>
+        </figure>
+    </div>
+    <p> 
+        The second step to do warping is to calculate the coordinate of warped image, where I do by first apply the calculated H to the four corners of the original 
+        rectangular image to find the polygon shape where the warp is going to take form. Then, I use inverse warping: I loop over each of the points in the final polygon
+        and calculate \p = wH^{-1}p'\ as the point on the original image to do interpolation for color and feed the color back into the final polygon.
+    </p>
+    <p>
+        Below are the warped image of wurster hall, fountain and EECS hall:
+    </p>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./wurster_warp.png" alt="Original">
+            <figcaption>Warped high perspective of Wurster</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./fountain_warp.png" alt="Original">
+            <figcaption>Warped high perspective of fountain</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./EECS_warp.png" alt="Original">
+            <figcaption>Warped right perspective of EECS Hall</figcaption>
+        </figure>
+    </div>
 </section>
 
 
 <section>
-    <h2>Part 2: Computing the "Mid-way Face"</h2>
+    <h2>Rectify Images</h2>
+    <p>
+        After implementing the warping function, we could rectify an image: simply annotate a known rectangle in an image and warp it toward a 
+        set of 4 points which compose a rectangle. The set of 4 points are chosen by hand, but their value should be adjusted to preserve original resolution.
+    </p>
+    <p>Below are the annotated images and their rectifications, the original image could be found in section 'Shoot the Pictures' above</p>
     <div class="image-gallery">
         <figure class="image-container">
-            <img src="./me.png" alt="Original">
-            <figcaption>Me Original Face</figcaption>
+            <img src="./poster_pts.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Annotated poster</figcaption>
         </figure>
         <figure class="image-container">
-            <img src="./morph_me.png" alt="Original">
-            <figcaption>Me Morphed to Middle Face</figcaption>
-        </figure>
-        <figure class="image-container"></figure>
-            <img src="./middle_pic.png" alt="Original">
-            <figcaption>the Final Result</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="./george.png" alt="Original">
-            <figcaption>George Original Face</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="./morph_george.png" alt="Offset: r[90,22], g[40,16]">
-            <figcaption>George Morphed to Middle Face</figcaption>
+            <img src="./trans_poster.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Rectified poster</figcaption>
         </figure>
     </div>
-    <p>
-        I averaged the annotated points for a middle face point structure and found its triangulation.
-        I warped both my and George's face into the middle face to creat the two morphed faces as seen from above.
-        Then I averaged the color of the two morphed faces to create the final result.
-    </p>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./campanile_pts.png" alt="Original">
+            <figcaption>Annotated campanile</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./trans_campanile.png" alt="Original">
+            <figcaption>Rectified campanile</figcaption>
+        </figure>
+    </div>
 </section>
 
 <section>
-    <h2>Part 3: The Morph Sequence</h2>
+    <h2>Blending into Mosaic</h2>
+    <p>
+        After obtaining the warped image, there are two more steps before we could morph warped and original into a mosaic, 
+        the two steps are alignment and blending.
+    </p>
+    <h3>Alignment</h3>
+    <p>
+        To do alignment between the original and the warped image. I obtain a mean point by average between the
+        annotated points in base image and transformed annotated point in the warped image. Then I stack the mean point and calculate
+        the width and height of the final mosaic image by finding the maximum offset between mean point and each of the 4 boundries of original and warped.
+    </p>
+
+    <p>Below is the example of alignment on Wurster hall images, the green point denotes the mean point, the gray part is occupied by one of the images, black occupied
+        by none and white is the intersection.
+    </p>
+
     <div class="image-gallery">
         <figure class="image-container">
-            <img src="./morph_seq.gif" alt="Original">
-            <figcaption>The Morphing Sequence</figcaption>
+            <img src="./align_example.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Meaning point of original</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./align_example1.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Transformed Meaning point of warped</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./alignment_sample.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Mosaic Dimension Demonstration</figcaption>
         </figure>
     </div>
+    <h3>Blending</h3>
     <p>
-        Using the morph function I wrote, I set wrap_frac and dissolve_frac to both be a evenly spaced sequence
-        of length 45 between 0,1. Creating a gif with 45 frames, then I added a loop effect.
+        To do blending, I implemented an alpha mask on the obtained interection in the alignment process.
     </p>
+
+    <p>Below is the vertical alpha mask used on Wurster/fountain images, and the horizontal alpha mask used on the EECS images.</p>
+
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./vertical_mask.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Vertical Alpha Mask</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./vertical_mask2.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption></figcaption>
+        </figure>
+    </div>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./horizontal_mask1.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Horizontal Alpha Mask</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./horizontal_mask2.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption></figcaption>
+        </figure>
+    </div>
+    <h3>The Mosaic</h3>
+    <p>
+        After doing alignment and blending, we could finally create mosaics, below are the mosaics of wurster, fountain and EECS hall, inaccompany of the original images.
+    </p>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./wurster_center.jpg" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Original 1</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./wurster_up.jpg" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Original 2</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./trans_wurster.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Mosaic</figcaption>
+        </figure>
+    </div>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./fountain_down.jpg" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Original 1</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./fountain_up.jpg" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Original 2</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./trans_fountain.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Mosaic</figcaption>
+        </figure>
+    </div>
+    <div class="image-gallery">
+        <figure class="image-container">
+            <img src="./EECS_left.jpg" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Original 1</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./EECS_right.jpg" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Original 2</figcaption>
+        </figure>
+        <figure class="image-container">
+            <img src="./trans_EECS.png" alt="Offset: r[90,22], g[40,16]">
+            <figcaption>Mosaic</figcaption>
+        </figure>
+    </div>
 </section>
 
 
-<section>
-    <h2>Part 4: The "Mean face" of a population</h2>
-    <p>
-        I use data from the FEI Face Database, selecting only the first 50 images of female to avoid 
-        the final average face to be too blurry.
-    </p>
-    <div class="image-gallery">
-        <figure class="image-container">
-            <img src="./provided_annotation.png" alt="Original">
-            <figcaption>The Provided Annotation</figcaption>
-        </figure>
-    </div>
-    <p>
-        The keypoints of each face is provided by the website, which we could observe is not very precise.
-    </p>
-
-    <div class="image-gallery">
-        <figure class="image-container">
-            <img src="./popexample1.png" alt="Original">
-            <figcaption>Example 1</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="./popexample1_morph.png" alt="Original">
-            <figcaption>Morphed Example 1</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="./popexample2.png" alt="Original">
-            <figcaption>Example 2</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="./popexample2_morph.png" alt="Original">
-            <figcaption>Morphed Example 2</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="./popexample3.png" alt="Offset: r[90,22], g[40,16]">
-            <figcaption>Example 3</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="./popexample3_morph.png" alt="Offset: r[90,22], g[40,16]">
-            <figcaption>Morphed Example 3</figcaption>
-        </figure>
-    </div>
-    <p>
-        Some examples of morphing each of the faces in the dataset into the average shape.
-    </p>
-    <div class="image-gallery">
-        <figure class="image-container">
-            <img src="./pop_mean_face.png" alt="Offset: r[90,22], g[40,16]">
-            <figcaption>The Average Face of Population(FEI Female)</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="./pop_to_me.png" alt="Original">
-            <figcaption>Population Morped into Me</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="./me_to_pop.png" alt="Original">
-            <figcaption>Me Morped into Population</figcaption>
-        </figure>
-    </div>
-    <p>
-        I calculated the mean face by finding the mean point structure of all images and morph all image
-        into the mean strcture. Then averaage the color to get the final blurry mean image.
-        The above also shows my face warped into the average geometry and vice versa.
-    </p>
-</section>
-
-<section>
-    <h2>Part 5: The Caricature</h2>
-    <div class="image-gallery">
-        <figure class="image-container">
-            <img src="./pop_mean_face.png" alt="Original">
-            <figcaption>The Average Face of FEI Female</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="./caricature_me_female.png" alt="Original">
-            <figcaption>My Face Augmented with Female Traits</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="./male_pop_face.png" alt="Original">
-            <figcaption>The Average Face of FEI Male</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="./caricature_me_male.png" alt="Original">
-            <figcaption>My Face Augmented with Male Traits</figcaption>
-        </figure>
-    </div>
-    <p>
-        To do the caricature, I calculated the mean face of male and female of the FEI dataset.
-        Then, using a much larger wrap_frac compare to part 2, I made two caricatures, one of me and female traits and another
-        of me and male traits. We could see that the female trait caricature makes my face features to be compressed to the middle,
-        indicating that my facial feature is too spread out compare to the mean face of FEI female.
-        The male trait caricature does not compress my facial feature, but elogated my face horizontally, indicating that
-        my face is narrower than the mean face of FEI male.
-    </p>
-</section>
-
-<section>
-    <h2>Part 6: Bell and Whistles: PCA Basis for the Face Space</h2>
-    <div class="image-gallery">
-        <figure class="image-container">
-            <img src="./pca_top10.png" alt="Original">
-            <figcaption>The Top 10 Principle Components of Face</figcaption>
-        </figure>
-    </div>
-    <p>
-        I used PCA method imported from sklearn.decomposition to do PCA analysis on my face space.
-        we could see that some of the features are identified as most prominent in the face space,
-        like hairlines, eyebrows, etc..
-    </p>
-    <div class="image-gallery">
-        <figure class="image-container">
-            <img src="./mean_pca.png" alt="Original">
-            <figcaption>The Mean Face</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="./10thpc.png" alt="Original">
-            <figcaption>The 10th Principle Conponent (Eyebrows)</figcaption>
-        </figure>
-        <figure class="image-container">
-            <img src="./pcares.png" alt="Original">
-            <figcaption>Mean Face with Extra Sharp Eyebrows</figcaption>
-        </figure>
-    </div>
-    <p>
-        Using the PCA basis, we could augment a face using different features. For example, we could create a face with
-        extra sharp eyebrows as shown above. This is a different way of transformation and morphing compare to
-        the triangular mesh one used in project, but it has a lot of potential to do transformation too.
-    </p>
-</section>
 
 <section>
     <h2>Conclusion</h2>
     <p>
-        From this project, we could see that morphing using triangular mesh is very strong, picking the correct alignment
-        would make morphing almost perfect as seen in the morphing sequence.
+        This is a very interesting project, it enables me to transform an image to achieve a semi-change of perspective, which I used to thought was impossible
+        since it would be including extra information. It is amazing and satisfying to know that there are tricks we could do to trick our eyes, like projecting original information on a new projection plane.
     </p>
+
 </section>
 
 
+
 <footer>
-    <p>&copy; Yilin Ni's Project 3</p>
+    <p>&copy; Yilin Ni's Project 4A</p>
 </footer>
 
 </body>
